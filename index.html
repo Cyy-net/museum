@@ -334,17 +334,17 @@
       transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* ENLARGED SIZING SPECIFICALLY FOR IMAGE 6 */
+    /* ENLARGED SIZING SPECIFICALLY FOR IMAGE 6 (DESKTOP) */
     .art-card.art-card-featured {
-      width: clamp(400px, 45vw, 580px) !important;
-      height: 82vh !important;
+      width: clamp(420px, 48vw, 620px) !important;
+      height: 85vh !important;
     }
 
     .art-card:hover {
       transform: translateY(-12px);
     }
 
-    /* IMAGE WRAPPER (GUARANTEES IMAGE FITS INSIDE) */
+    /* IMAGE WRAPPER */
     .image-wrapper {
       width: 100%;
       height: 48vh;
@@ -356,7 +356,7 @@
     }
 
     .art-card-featured .image-wrapper {
-      height: 66vh !important; /* Significantly taller image container for Image 6 */
+      height: 68vh !important;
     }
 
     .image-wrapper img {
@@ -502,7 +502,6 @@
       max-height: 85vh;
     }
 
-    /* EXPANDED MODAL SIZE FOR FEATURED IMAGE 6 */
     .modal-content.modal-featured-layout {
       max-width: 1300px;
       grid-template-columns: 1.2fr 0.8fr;
@@ -522,7 +521,7 @@
     }
 
     .modal-featured-layout .modal-image-container {
-      height: 78vh; /* Larger preview in modal for Image 6 */
+      height: 78vh;
     }
 
     .modal-image-container img {
@@ -592,28 +591,60 @@
       color: var(--accent);
     }
 
-    /* MOBILE BREAKPOINT & CELLPHONE SIZING */
+    /* -------------------------------------------------------------
+       MASSIVE MOBILE OVERRIDES SPECIFICALLY FOR CELLPHONES
+    ------------------------------------------------------------- */
     @media (max-width: 768px) {
-      .art-card { width: 260px; height: 55vh; }
-      
-      /* ENLARGED IMAGE 6 SPECIFICALLY FOR CELLPHONE / MOBILE DEVICES */
-      .art-card.art-card-featured { 
-        width: 88vw !important; 
-        height: 76vh !important; 
+      .art-card { 
+        width: 250px; 
+        height: 55vh; 
       }
       
-      .image-wrapper { height: 38vh; }
+      /* MASSIVE SIZING FOR IMAGE 6 ON MOBILE */
+      .art-card.art-card-featured { 
+        width: 96vw !important; 
+        height: 88vh !important; 
+      }
+      
+      .image-wrapper { 
+        height: 38vh; 
+      }
       
       .art-card-featured .image-wrapper { 
-        height: 60vh !important; 
+        height: 74vh !important; 
+        overflow: visible;
+      }
+
+      /* AGGRESSIVE OVERSIZED ZOOM FOR IMAGE 6 ON PHONES */
+      .art-card-featured .image-wrapper img {
+        max-width: 100% !important;
+        max-height: 100% !important;
+        transform: scale(1.18) !important;
       }
       
-      .modal-content { grid-template-columns: 1fr; gap: 1.5rem; overflow-y: auto; max-height: 85vh; }
-      .modal-content.modal-featured-layout { grid-template-columns: 1fr; }
-      .modal-image-container { height: 40vh; }
+      .modal-content { 
+        grid-template-columns: 1fr; 
+        gap: 1.5rem; 
+        overflow-y: auto; 
+        max-height: 85vh; 
+      }
+
+      .modal-content.modal-featured-layout { 
+        grid-template-columns: 1fr; 
+      }
+
+      .modal-image-container { 
+        height: 38vh; 
+      }
       
-      /* LARGER MODAL PREVIEW FOR IMAGE 6 ON CELLPHONES */
-      .modal-featured-layout .modal-image-container { height: 62vh !important; }
+      /* GIANT PREVIEW FOR IMAGE 6 MODAL ON PHONES */
+      .modal-featured-layout .modal-image-container { 
+        height: 72vh !important; 
+      }
+
+      .modal-featured-layout .modal-image-container img {
+        transform: scale(1.15);
+      }
       
       .modal-info { max-height: none; padding-right: 0; }
       .modal-close { top: 1rem; right: 1rem; }
@@ -718,7 +749,6 @@
     const musicBtn = document.getElementById('musicBtn');
     let isPlaying = false;
 
-    // Send Formspree alert via AJAX POST
     function notifyFormspree() {
       fetch("https://formspree.io/f/xyegekpo", {
         method: "POST",
@@ -969,7 +999,6 @@ To me, this is more than just a picture of my girlfriend. It is a small piece of
       modalTitle.textContent = art.title;
       modalDesc.textContent = art.description;
 
-      // Make modal layout bigger specifically for Image 6 (index 5)
       if (index === 5) {
         modalContent.classList.add('modal-featured-layout');
       } else {
