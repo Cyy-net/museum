@@ -592,15 +592,29 @@
       color: var(--accent);
     }
 
+    /* MOBILE BREAKPOINT & CELLPHONE SIZING */
     @media (max-width: 768px) {
       .art-card { width: 260px; height: 55vh; }
-      .art-card.art-card-featured { width: 320px !important; height: 68vh !important; }
+      
+      /* ENLARGED IMAGE 6 SPECIFICALLY FOR CELLPHONE / MOBILE DEVICES */
+      .art-card.art-card-featured { 
+        width: 88vw !important; 
+        height: 76vh !important; 
+      }
+      
       .image-wrapper { height: 38vh; }
-      .art-card-featured .image-wrapper { height: 50vh !important; }
+      
+      .art-card-featured .image-wrapper { 
+        height: 60vh !important; 
+      }
+      
       .modal-content { grid-template-columns: 1fr; gap: 1.5rem; overflow-y: auto; max-height: 85vh; }
       .modal-content.modal-featured-layout { grid-template-columns: 1fr; }
       .modal-image-container { height: 40vh; }
-      .modal-featured-layout .modal-image-container { height: 48vh; }
+      
+      /* LARGER MODAL PREVIEW FOR IMAGE 6 ON CELLPHONES */
+      .modal-featured-layout .modal-image-container { height: 62vh !important; }
+      
       .modal-info { max-height: none; padding-right: 0; }
       .modal-close { top: 1rem; right: 1rem; }
       .scroll-indicator { left: 1.5rem; right: 4.5rem; }
