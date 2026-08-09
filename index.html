@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ginaya ko lang to a</title>
+  
+  <!-- Typography matching Artsie Gallery aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* CSS RESETS & GLOBAL VARIABLES */
+    :root {
+      --text-main: #f3f3f3;
+      --text-muted: #d0b090;
+      --accent: #e5be75;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Inter', sans-serif;
+      --transition-smooth: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      background-color: #0b0b0b;
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      overflow: hidden !important;
+      line-height: 1.6;
+      touch-action: pan-x;
+    }
+
+    /* -------------------------------------------------------------
+       1. 3D DOORWAY ENTRANCE
+    ------------------------------------------------------------- */
+    .entrance-viewport {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      perspective: 1200px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #050505;
+      transition: opacity 1s ease 1s, pointer-events 0s 2s;
+    }
+
+    .entrance-viewport.entered {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .door-frame {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform-style: preserve-3d;
+      transition: transform 1.8s cubic-bezier(0.7, 0, 0.3, 1);
+    }
+
+    .entrance-viewport.entered .door-frame {
+      transform: translateZ(800px);
+    }
+
+    .door {
+      position: absolute;
+      top: 0;
+      width: 50vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #1c1c1c 0%, #0d0d0d 100%);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      transition: transform 1.8s cubic-bezier(0.65, 0, 0.35, 1);
+      box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+    }
+
+    .door-left {
+      left: 0;
+      transform-origin: left center;
+      justify-content: flex-end;
+      padding-right: 3rem;
+      border-right: 2px solid rgba(229, 190, 117, 0.4);
+    }
+
+    .door-right {
+      right: 0;
+      transform-origin: right center;
+      justify-content: flex-start;
+      padding-left: 3rem;
+      border-left: 2px solid rgba(229, 190, 117, 0.4);
+    }
+
+    .entrance-viewport.entered .door-left {
+      transform: rotateY(-110deg);
+    }
+
+    .entrance-viewport.entered .door-right {
+      transform: rotateY(110deg);
+    }
+
+    .door-handle {
+      width: 12px;
+      height: 120px;
+      background: linear-gradient(to bottom, #e5be75, #8a6d1b);
+      border-radius: 6px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    .entrance-content {
+      position: absolute;
+      z-index: 10;
+      text-align: center;
+      padding: 2rem;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .entrance-viewport.entered .entrance-content {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .entrance-subtitle {
+      font-size: 0.85rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    .entrance-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 7vw, 6rem);
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      line-height: 1;
+      margin-bottom: 2.5rem;
+      text-transform: uppercase;
+    }
+
+    .enter-btn {
+      background: rgba(13, 13, 13, 0.8);
+      border: 1px solid rgba(229, 190, 117, 0.5);
+      color: var(--text-main);
+      padding: 1.2rem 3.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      transition: var(--transition-smooth);
+    }
+
+    .enter-btn:hover, .enter-btn:active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 30px rgba(229, 190, 117, 0.3);
+    }
+
+    /* -------------------------------------------------------------
+       2. MUSEUM INTERIOR
+    ------------------------------------------------------------- */
+    .museum-interior {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 1.8s ease 0.6s, transform 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s;
+      overflow: hidden;
+    }
+
+    body.inside .museum-interior {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* MOVING MAROON WALL */
+    .museum-wall-bg {
+      position: absolute;
+      inset: -50px;
+      width: calc(100% + 100px);
+      height: calc(100% + 100px);
+      background: radial-gradient(circle at 50% 30%, #6e1d26 0%, #3d0c11 65%, #1a0406 100%);
+      will-change: transform;
+      z-index: 0;
+    }
+
+    /* MOVING WOODEN FLOOR */
+    .museum-floor {
+      position: absolute;
+      bottom: 0;
+      left: -100px;
+      width: calc(100% + 200px);
+      height: 25vh;
+      background: 
+        linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0.4) 100%),
+        repeating-linear-gradient(90deg, #683f21 0px, #683f21 60px, #512f17 61px, #512f17 62px),
+        repeating-linear-gradient(0deg, #7c4c28 0px, #7c4c28 200px, #40240e 201px, #40240e 203px);
+      box-shadow: inset 0 20px 30px rgba(0,0,0,0.8);
+      border-top: 4px solid #1a0406;
+      pointer-events: none;
+      z-index: 1;
+      will-change: transform;
+    }
+
+    /* FLOATING MUSIC TOGGLE BUTTON */
+    .music-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(229, 190, 117, 0.25);
+      border: 1px solid rgba(229, 190, 117, 0.4);
+      color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 120;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .music-btn:hover, .music-btn:active {
+      background: var(--accent);
+      transform: scale(1.08);
+    }
+
+    .music-btn.muted {
+      opacity: 0.5;
+      background: rgba(0, 0, 0, 0.5);
+      color: var(--accent);
+    }
+
+    .music-icon {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    /* HORIZONTAL CONTAINER */
+    .horizontal-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      display: flex;
+      align-items: center;
+      scrollbar-width: none;
+      cursor: grab;
+      z-index: 2;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .horizontal-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .horizontal-wrapper:active {
+      cursor: grabbing;
+    }
+
+    .landscape-track {
+      display: flex;
+      align-items: center;
+      gap: 6vw;
+      padding: 0 10vw 0 12vw;
+      height: 100%;
+    }
+
+    /* INTRO TITLE BLOCK */
+    .intro-block {
+      min-width: 280px;
+      margin-right: 2vw;
+    }
+
+    .intro-subtitle {
+      font-size: 0.8rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+
+    .intro-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .intro-hint {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ART CARD CONTAINER WITH EXACT FIT SIZING */
+    .art-card {
+      width: clamp(280px, 28vw, 380px);
+      height: 65vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* SLIGHTLY BIGGER SIZING SPECIFICALLY FOR IMAGE 6 */
+    .art-card.art-card-featured {
+      width: clamp(340px, 35vw, 460px);
+      height: 70vh;
+    }
+
+    .art-card:hover {
+      transform: translateY(-12px);
+    }
+
+    /* IMAGE WRAPPER (GUARANTEES IMAGE FITS INSIDE) */
+    .image-wrapper {
+      width: 100%;
+      height: 48vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background: transparent;
+    }
+
+    .art-card-featured .image-wrapper {
+      height: 52vh; /* Slightly taller image container for Image 6 */
+    }
+
+    .image-wrapper img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      filter: drop-shadow(0 12px 24px rgba(0,0,0,0.7));
+    }
+
+    .art-card:hover .image-wrapper img {
+      transform: scale(1.04);
+    }
+
+    /* BRASS METADATA PLAQUE AT BOTTOM */
+    .art-meta {
+      width: 85%;
+      min-height: 54px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      margin-top: 1rem;
+      background: rgba(229, 190, 117, 0.18);
+      border: 1px solid rgba(229, 190, 117, 0.35);
+      backdrop-filter: blur(5px);
+      text-align: center;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+    }
+
+    .art-title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .art-artist {
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-top: 0.15rem;
+    }
+
+    /* NAVIGATION ARROWS */
+    .nav-arrow {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(26, 4, 6, 0.6);
+      border: 1px solid rgba(229, 190, 117, 0.4);
+      color: var(--accent);
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .nav-arrow:hover {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 20px rgba(229, 190, 117, 0.4);
+    }
+
+    .nav-arrow.left { left: 1.5rem; }
+    .nav-arrow.right { right: 1.5rem; }
+
+    /* BOTTOM PROGRESS BAR */
+    .scroll-indicator {
+      position: fixed;
+      bottom: 2rem;
+      left: 4rem;
+      right: 6rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+
+    .progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.1s linear;
+    }
+
+    /* -------------------------------------------------------------
+       3. EXPANDED DETAIL MODAL
+    ------------------------------------------------------------- */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(15, 3, 5, 0.95);
+      backdrop-filter: blur(15px);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      padding: 2rem;
+    }
+
+    .modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      max-width: 1100px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      transform: scale(0.95);
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      max-height: 85vh;
+    }
+
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-image-container {
+      width: 100%;
+      height: 70vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .modal-image-container img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.8));
+    }
+
+    .modal-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: 70vh;
+      overflow-y: auto;
+      padding-right: 1rem;
+    }
+
+    .modal-info::-webkit-scrollbar {
+      width: 4px;
+    }
+    .modal-info::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .modal-title {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      font-weight: 300;
+      line-height: 1.2;
+    }
+
+    .modal-artist {
+      font-size: 0.9rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .modal-description {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      font-weight: 300;
+      white-space: pre-line;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .modal-close:hover {
+      color: var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .art-card { width: 260px; height: 55vh; }
+      .art-card.art-card-featured { width: 300px; height: 58vh; }
+      .image-wrapper { height: 38vh; }
+      .art-card-featured .image-wrapper { height: 42vh; }
+      .modal-content { grid-template-columns: 1fr; gap: 1.5rem; overflow-y: auto; max-height: 85vh; }
+      .modal-image-container { height: 40vh; }
+      .modal-info { max-height: none; padding-right: 0; }
+      .modal-close { top: 1rem; right: 1rem; }
+      .scroll-indicator { left: 1.5rem; right: 4.5rem; }
+      .nav-arrow { width: 36px; height: 36px; font-size: 1rem; }
+      .nav-arrow.left { left: 0.5rem; }
+      .nav-arrow.right { right: 0.5rem; }
+      .music-btn { bottom: 1.5rem; right: 1.5rem; width: 42px; height: 42px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AUDIO ELEMENT WITH BGM: PANATA BY TOTHAPI -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="Pwede Ka Ba.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- 1. 3D DOORWAY ENTRANCE -->
+  <div class="entrance-viewport" id="entranceViewport">
+    <div class="entrance-content">
+      <p class="entrance-subtitle">WELCOME TO</p>
+      <h1 class="entrance-title">MUSEUM KO hehe</h1>
+      <button class="enter-btn" id="enterBtn" type="button">Enter Museum</button>
+    </div>
+
+    <div class="door-frame">
+      <div class="door door-left">
+        <div class="door-handle"></div>
+      </div>
+      <div class="door door-right">
+        <div class="door-handle"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MUSEUM INTERIOR -->
+  <div class="museum-interior" id="museumInterior">
+    
+    <!-- MOVING BACKGROUND WALL & FLOOR -->
+    <div class="museum-wall-bg" id="museumWall"></div>
+    <div class="museum-floor" id="museumFloor"></div>
+
+    <!-- FLOATING MUSIC BUTTON -->
+    <button class="music-btn" id="musicBtn" title="Toggle Music" type="button">
+      <span class="music-icon" id="musicIcon">♪</span>
+    </button>
+
+    <!-- SIDEWAYS NAVIGATION ARROWS -->
+    <button class="nav-arrow left" id="arrowLeft" type="button">&#10094;</button>
+    <button class="nav-arrow right" id="arrowRight" type="button">&#10095;</button>
+
+    <!-- HORIZONTAL SCROLL CONTAINER -->
+    <div class="horizontal-wrapper" id="scrollContainer">
+      <div class="landscape-track">
+        
+        <!-- INTRO BLOCK -->
+        <div class="intro-block">
+          <p class="intro-subtitle">oy kinopya ko lang to a</p>
+          <h1 class="intro-title">My Museum</h1>
+          <p class="intro-hint">baka macopyright pako sa localhost</p>
+        </div>
+
+        <!-- 6 UNFRAMED PICTURE CARDS -->
+        <div id="landscapeGrid" style="display: flex; gap: 6vw;"></div>
+
+      </div>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="scroll-indicator">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 3. DETAIL MODAL -->
+  <div class="modal" id="artModal">
+    <button class="modal-close" id="closeBtn" type="button">Close</button>
+    <div class="modal-content">
+      <div class="modal-image-container">
+        <img id="modalImg" src="" alt="Artwork Detail">
+      </div>
+      <div class="modal-info">
+        <span class="modal-artist" id="modalArtist">Gly</span>
+        <h2 class="modal-title" id="modalTitle">Artwork Title</h2>
+        <div class="modal-description" id="modalDesc">Explanation placeholder...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    /* -------------------------------------------------------------
+       1. AUDIO CONTROLLER, 3D DOOR ENTRANCE & FORMSPREE NOTIFIER
+    ------------------------------------------------------------- */
+    const enterBtn = document.getElementById('enterBtn');
+    const entranceViewport = document.getElementById('entranceViewport');
+    const bgMusic = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicBtn');
+    let isPlaying = false;
+
+    // Send Formspree alert via AJAX POST (no page reload or URL mutation)
+    function notifyFormspree() {
+      fetch("https://formspree.io/f/xyegekpo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          event: "Museum Entry",
+          message: "She entered your virtual museum gallery!",
+          timestamp: new Date().toLocaleString(),
+          device: navigator.userAgent
+        })
+      }).catch(err => console.log("Notification send error:", err));
+    }
+
+    enterBtn.addEventListener('click', (e) => {
+      if (e) e.preventDefault();
+
+      // Trigger door animation and enter museum
+      entranceViewport.classList.add('entered');
+      document.body.classList.add('inside');
+
+      // Trigger background audio
+      bgMusic.play().then(() => {
+        isPlaying = true;
+      }).catch(err => {
+        console.log("Autoplay prevented on mobile:", err);
+      });
+
+      // Trigger silent notification to Formspree
+      notifyFormspree();
+    });
+
+    musicBtn.addEventListener('click', (e) => {
+      if (e) e.preventDefault();
+      if (isPlaying) {
+        bgMusic.pause();
+        musicBtn.classList.add('muted');
+        isPlaying = false;
+      } else {
+        bgMusic.play();
+        musicBtn.classList.remove('muted');
+        isPlaying = true;
+      }
+    });
+
+    /* -------------------------------------------------------------
+       2. YOUR 6 PNG IMAGE SLOTS & EXPLANATIONS
+    ------------------------------------------------------------- */
+    const artworks = [
+      {
+        id: "01",
+        title: "Sagip",
+        year: "2024",
+        image: "image1.png",
+        description: `A story of comfort, healing, and being someone's strength during their hardest moments.
+
+There are times when life becomes too heavy to carry alone. Moments when words are not enough, when strength disappears, and all we need is someone who chooses to stay.
+
+To be someone's refuge is a quiet kind of love. It is holding their hand through uncertainty, listening to their fears, and reminding them that they do not have to face everything by themselves.
+
+Sometimes, saving someone does not mean fixing all their problems. Sometimes, it simply means being there, offering a shoulder to rest on, a place to breathe, and a reminder that they are not alone.
+
+Through every storm, there is comfort in knowing that someone is willing to stay until the skies become clear again.`
+      },
+      {
+        id: "02",
+        title: "My Favorite Hue",
+        year: "2023",
+        image: "image2.png",
+        description: `A story of warmth, comfort, and the person who gives color to our world.
+
+Some colors stay with us because of the feelings they carry. They remind us of certain moments, memories, and the emotions we associate with them. Among all the colors we encounter, there are some that feel familiar, comforting, and impossible to forget.
+
+Yellow has always been associated with joy, warmth, and the feeling of sunlight. It reminds us of happiness, peaceful moments, and the kind of comfort we want to return to.
+
+In the same way, some people bring that same feeling into our lives. They become a source of warmth, someone who makes difficult days feel lighter and ordinary moments feel more meaningful.
+
+Like a favorite hue, they become a feeling we naturally gravitate toward. A presence that adds color to our days and makes the world feel a little brighter simply by being there.
+
+Maybe our favorite hue is not just a color we see.
+Maybe it is a person we feel.
+
+Perhaps my favorite hue is not a color at all.
+Perhaps it's you.`
+      },
+      {
+        id: "03",
+        title: "She Grew Wings in Silence",
+        year: "2022",
+        image: "image3.png",
+        description: `A story of transformation, identity, and the quiet battles no one sees.
+
+People often celebrate the moment someone finally changes, but they rarely see the struggles that came before it. They do not see the nights filled with doubt, the wounds hidden behind smiles, or the silent battles fought just to keep moving forward.
+
+There are moments in life when we feel trapped by who we were, afraid of who we might become. But within those difficult seasons, something begins to grow, a strength we never knew we had, a courage we never thought we could find.
+
+Like a butterfly leaving its cocoon, she discovers that becoming herself was never about proving anything to the world. It was about finally giving herself permission to grow.
+
+Some transformations happen quietly. Some of the greatest changes happen when no one is watching.`
+      },
+      {
+        id: "04",
+        title: "I'm Drunk, I Meow You",
+        year: "2026",
+        image: "image4.png",
+        description: `A story of love, longing, and the feelings we are sometimes too afraid to say.
+
+Cats have a quiet way of showing affection. They do not always express love through grand gestures, but through small moments of comfort, closeness, and simply choosing to stay.
+
+Some feelings are like that too. They live between laughter, late-night conversations, and memories we wish could last a little longer. They are deeply felt, yet often left unspoken.
+
+There are people who become our safe place, the ones who know our stories and make ordinary moments feel special. But sometimes, the hardest truth is that loving someone does not always mean being loved in the same way.
+
+Like two cats finding comfort beside each other, there is something beautiful about staying close to someone who feels like home, even when we know we cannot keep them forever.
+
+Because sometimes, the most painful kind of love is not the one that ends with goodbye. It is the one where someone means everything to you, while you slowly realize you may only be a part of their story.`
+      },
+      {
+        id: "05",
+        title: "The Colors I Could Not See",
+        year: "2021",
+        image: "image5.png",
+        description: `A story of insecurity, self-discovery, and finding the beauty within.
+
+There are times when we become so focused on the things we dislike about ourselves that we forget to see everything else that makes us beautiful.
+
+We look at our flaws more closely than our strengths. We compare ourselves to others until we no longer recognize our own worth. We search for validation outside of ourselves while ignoring the beauty that has always existed within.
+
+Maybe the reason we cannot see our own colors is because we have spent too much time looking through the eyes of doubt.
+
+Sometimes, all it takes is a moment of acceptance to realize that the beauty we were searching for was never missing. It was there all along, waiting to be seen.`
+      },
+      {
+        id: "06",
+        title: "The Girl of my Dreams",
+        year: "2026",
+        image: "image6.png",
+        description: `This photo captures a soft and beautiful moment with my girlfriend. She looks effortlessly beautiful, holding a bouquet of flowers close to her as if protecting a little piece of happiness. Her shy expression and the way she hides behind the flowers give the moment a gentle and innocent charm.
+
+The flowers in her hands feel like a reflection of how I see her. Warm, and precious. Even in a simple photograph, there is something special about her presence that makes the whole moment feel peaceful. She does not need to pose or try too hard to be beautiful, simply being herself makes the picture meaningful to me.
+
+To me, this is more than just a picture of my girlfriend. It is a small piece of a beautiful memory. A moment I would want to keep forever, just like a painting that tells a story without needing any words.`
+      }
+    ];
+
+    // RENDER GALLERY ITEMS
+    const landscapeGrid = document.getElementById('landscapeGrid');
+
+    function renderGallery() {
+      landscapeGrid.innerHTML = artworks.map((item, index) => {
+        const featuredClass = index === 5 ? 'art-card-featured' : '';
+        return `
+          <article class="art-card ${featuredClass}" onclick="openModal(${index})">
+            <div class="image-wrapper">
+              <img src="${item.image}" alt="${item.title}">
+            </div>
+            <div class="art-meta">
+              <h3 class="art-title">${item.title}</h3>
+              <p class="art-artist">${item.year}</p>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    /* -------------------------------------------------------------
+       3. CROSS-DEVICE SIDEWAYS MOVEMENT & PARALLAX
+    ------------------------------------------------------------- */
+    const scrollContainer = document.getElementById('scrollContainer');
+    const progressFill = document.getElementById('progressFill');
+    const museumWall = document.getElementById('museumWall');
+    const museumFloor = document.getElementById('museumFloor');
+    const arrowLeft = document.getElementById('arrowLeft');
+    const arrowRight = document.getElementById('arrowRight');
+
+    function handleParallax() {
+      const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+      const scrollPos = scrollContainer.scrollLeft;
+      const progressRatio = maxScroll > 0 ? scrollPos / maxScroll : 0;
+
+      progressFill.style.width = `${Math.min(100, Math.max(0, progressRatio * 100))}%`;
+
+      const wallShift = (progressRatio - 0.5) * -120;
+      museumWall.style.transform = `translateX(${wallShift}px)`;
+
+      const floorShift = -(scrollPos * 0.4); 
+      museumFloor.style.transform = `translateX(${floorShift}px)`;
+    }
+
+    scrollContainer.addEventListener('scroll', handleParallax, { passive: true });
+
+    window.addEventListener('wheel', (e) => {
+      if (document.body.classList.contains('inside')) {
+        const delta = e.deltaY || e.deltaX;
+        scrollContainer.scrollLeft += delta * 1.2;
+      }
+    }, { passive: true });
+
+    arrowLeft.addEventListener('click', () => {
+      scrollContainer.scrollBy({ left: -320, behavior: 'smooth' });
+    });
+
+    arrowRight.addEventListener('click', () => {
+      scrollContainer.scrollBy({ left: 320, behavior: 'smooth' });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!document.body.classList.contains('inside')) return;
+      if (e.key === 'ArrowRight') scrollContainer.scrollBy({ left: 320, behavior: 'smooth' });
+      if (e.key === 'ArrowLeft') scrollContainer.scrollBy({ left: -320, behavior: 'smooth' });
+    });
+
+    let isDown = false;
+    let startX;
+    let scrollLeftPos;
+
+    scrollContainer.addEventListener('mousedown', (e) => {
+      isDown = true;
+      startX = e.pageX - scrollContainer.offsetLeft;
+      scrollLeftPos = scrollContainer.scrollLeft;
+    });
+
+    scrollContainer.addEventListener('mouseleave', () => isDown = false);
+    scrollContainer.addEventListener('mouseup', () => isDown = false);
+
+    scrollContainer.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - scrollContainer.offsetLeft;
+      const walk = (x - startX) * 2;
+      scrollContainer.scrollLeft = scrollLeftPos - walk;
+    });
+
+    /* -------------------------------------------------------------
+       4. MODAL INTERACTION LOGIC
+    ------------------------------------------------------------- */
+    const modal = document.getElementById('artModal');
+    const modalImg = document.getElementById('modalImg');
+    const modalArtist = document.getElementById('modalArtist');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const closeBtn = document.getElementById('closeBtn');
+
+    function openModal(index) {
+      const art = artworks[index];
+      modalImg.src = art.image;
+      modalArtist.textContent = art.year;
+      modalTitle.textContent = art.title;
+      modalDesc.textContent = art.description;
+
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+      }
+    });
+
+    // INITIALIZE
+    document.addEventListener('DOMContentLoaded', () => {
+      renderGallery();
+    });
+  </script>
+</body>
+</html>
